@@ -14,6 +14,7 @@ const CHROMIUM_PATH = '/usr/bin/chromium-browser'; // this works in GitHub Actio
   });
 
   const page = await browser.newPage();
+  await page.setUserAgent('GitHubActionScreenshotBot/1.0'); 
   await page.goto('https://www.mystockalgo.com', { waitUntil: 'networkidle2' });
 
   const date = new Date().toISOString().split('T')[0];
@@ -32,5 +33,4 @@ const CHROMIUM_PATH = '/usr/bin/chromium-browser'; // this works in GitHub Actio
   console.log(`✅ Screenshot saved and logged: ${filename}`);
   await browser.close();
 })();
-
 
