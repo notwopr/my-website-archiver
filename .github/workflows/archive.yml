@@ -18,8 +18,13 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Puppeteer
+      - name: Install dependencies
         run: npm install
+
+      - name: Install Chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
 
       - name: Take screenshot
         run: node scripts/screenshot.js

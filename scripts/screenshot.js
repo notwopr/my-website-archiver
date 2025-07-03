@@ -1,10 +1,18 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
+// Hardcoded path to Chromium (adjust if needed)
+const CHROMIUM_PATH = '/usr/bin/chromium-browser'; // this works in GitHub Actions
+
 (async () => {
-  const browser = await puppeteer.launch({ headless: 'new' });
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    executablePath: CHROMIUM_PATH,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
+
   const page = await browser.newPage();
   await page.goto('https://www.mystockalgo.com', { waitUntil: 'networkidle2' });
 
@@ -19,10 +27,10 @@ const crypto = require('crypto');
   await page.screenshot({ path: filepath, fullPage: true });
 
   const hash = crypto.createHash('sha256').update(fs.readFileSync(filepath)).digest('hex');
-  const logLine = `${date},${filename},${hash}\n`;
+  fs.appendFileSync(hashLogPath, `${date},${filename},${hash}\n`);
 
-  fs.appendFileSync(hashLogPath, logLine);
-
-  console.log(`Screenshot saved and logged: ${filename}`);
+  console.log(`✅ Screenshot saved and logged: ${filename}`);
   await browser.close();
 })();
+
+
